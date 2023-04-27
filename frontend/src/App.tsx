@@ -20,7 +20,7 @@ function App() {
 			const res = await axios.get(
 				"local"
 			);
-			setPatients(res.data.sort((a, b) => (a.name > b.name ? 1 : -1)));
+			setPatients(res.data);
 		} catch (error) {
 			toast.error(error);
 		}
