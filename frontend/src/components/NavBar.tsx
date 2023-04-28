@@ -1,19 +1,8 @@
-import { Box } from "@mui/material"
-
-
-export const NavBar = () => {
-  return (
-    <Box sx={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent:'space-evenly',
-      paddingBottom: 12
-    }}>
-        <img src="/logoLarge.png" width="500"/>
-        
-        <a href="">List Patient</a>
-        <a href="">List Patient</a>
-        
-      </Box>
-  )
-}
+fetch("https://vv2qx5zqb7.execute-api.us-east-1.amazonaws.com/Dev", {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },      
+      body: JSON.stringify({records: record, album, artist, date, imageUrl})
+  });

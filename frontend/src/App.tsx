@@ -18,11 +18,11 @@ function App() {
 	const getPatients = async () => {
 		try {
 			const res = await axios.get(
-				"local"
+				"http://localhost:30000/"
 			);
 			setPatients(res.data);
 		} catch (error) {
-			toast.error(error);
+			console.log(error);
 		}
 	};
 
@@ -33,8 +33,12 @@ function App() {
 	return (
 		<>
 			<Title> Patients </Title>
-			<Form />
-			<Grid patients={patients} />
+			<Form onEdit={onEdit} setOnEdit={setOnEdit} getPatients={getPatients} />
+			<Grid
+				patients={patients}
+				setPatients={setPatients}
+				setOnEdit={setOnEdit}
+			/>
 			<ToastContainer autoClose={4000} position={toast.POSITION.TOP_RIGHT} />
 		</>
 	);
