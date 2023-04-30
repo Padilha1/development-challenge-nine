@@ -43,19 +43,23 @@ export const Form = (props: FormProps) => {
 		birthdate: "",
 	});
 
+	//Achar o paciente pelo ID se achar, joga no forms, se nao tiver, nao faz nada
 	useEffect(() => {
-		const patientToEdit = patients.find((patient: Patient) => patient.id == idToEdit);
+		const patientToEdit = patients.find(
+			(patient: Patient) => patient.id == idToEdit
+		);
 		if (patientToEdit) {
 			setPatientData({ ...patientToEdit });
 		}
 	}, [patients, idToEdit]);
 
+	// se tiver ID encontrado, ele atualiza, se não, ele registra e depois seta ID null pro forms para nao sobrescrever.
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
 		try {
 			if (idToEdit) {
 				await axios
-					.put("http://localhost:30000/" + idToEdit, patientData)
+					.put(`http://localhost:30000/ ${idToEdit}`, patientData)
 					.then(({ data }) => toast.success(data))
 					.catch(({ data }) => toast.error(data));
 			} else {
@@ -67,7 +71,13 @@ export const Form = (props: FormProps) => {
 		} catch (error) {
 			console.log(error);
 		} finally {
-			setIdToEdit(null); //se nao fosse null, iria sobrescrever o paciente editado anteriormente
+			setPatientData({
+				name: "",
+				email: "",
+				address: "",
+				birthdate: "",
+			});
+			setIdToEdit(null);
 			getPatients();
 		}
 	};
@@ -120,9 +130,8 @@ export const Form = (props: FormProps) => {
 					}
 					value={patientData.birthdate || ""}
 				/>
-				<Button variant="outlined" size="large" type="submit">
-					{" "}
-					Register Patient{" "}
+				<Button variant="outlined" size="large" type="submit" color="secondary">
+					{patientData ? "Update Patient" : "Register Patient"}
 				</Button>
 			</FormContainer>
 		</Container>
