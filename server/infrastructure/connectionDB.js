@@ -1,6 +1,6 @@
 import mysql from "mysql";
-import * as dotenv from 'dotenv'
-dotenv.config()
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const password = process.env.DATABASE_PSW;
 const user = process.env.DATABASE_USER;
@@ -11,7 +11,7 @@ export const database = mysql.createConnection({
 	port: "3306",
 	user: user,
 	password: password,
-	database: "medclouddb",
+	database: "medcloud",
 });
 
 database.connect((err) => {
@@ -21,5 +21,3 @@ database.connect((err) => {
 	}
 	console.log("Database connected!");
 });
-
-

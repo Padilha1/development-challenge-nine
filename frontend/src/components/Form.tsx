@@ -1,34 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Container, TextField } from "@mui/material";
-import { useRef, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { toast } from "react-toastify";
-
-// let request = {
-// 	host: "database-2.cvldcvbrhuyw.us-east-1.rds.amazonaws.com",
-// 	method: "GET",
-// 	url: "http://database-2.cvldcvbrhuyw.us-east-1.rds.amazonaws.com/",
-// 	path: "/",
-// };
-// let signedRequest = aws4.sign(request, {
-// 	// assumes user has authenticated and we have called
-// 	// AWS.config.credentials.get to retrieve keys and
-// 	// session tokens
-// 	secretAccessKey: AWS.config.credentials.secretAccessKey,
-// 	accessKeyId: AWS.config.credentials.accessKeyId,
-// 	sessionToken: AWS.config.credentials.sessionToken,
-// });
-
-// delete signedRequest.headers["Host"];
-// delete signedRequest.headers["Content-Length"];
-
-// let response = await axios(signedRequest);
-// console.log(response)
-
-
-
-
 
 const FormContainer = styled.form`
 	display: flex;
@@ -44,71 +19,71 @@ const FormContainer = styled.form`
 	border-radius: 5px;
 `;
 
-export const Form = ({ onEdit, setOnEdit, getPatients }: any) => {
-	const ref = useRef(getPatients);
+type Patient = {
+	id?: number;
+	name: string;
+	email: string;
+	address: string;
+	birthdate: string;
+};
+
+type FormProps = {
+	patients: Patient[];
+	idToEdit?: number | null;
+	getPatients: () => void;
+	setIdToEdit: Dispatch<SetStateAction<null>>;
+};
+
+export const Form = (props: FormProps) => {
+	const { patients, idToEdit, getPatients, setIdToEdit } = props;
+	const [patientData, setPatientData] = useState({
+		name: "",
+		email: "",
+		address: "",
+		birthdate: "",
+	});
 
 	useEffect(() => {
-		if (onEdit) {
-			const patient = ref.current;
-			patient.name.value = onEdit.name;
-			patient.email.value = onEdit.email;
-			patient.address.value = onEdit.address;
-			patient.birthdate.value = onEdit.birthdate;
+		const patientToEdit = patients.find((patient: Patient) => patient.id == idToEdit);
+		if (patientToEdit) {
+			setPatientData({ ...patientToEdit });
 		}
-	}, [onEdit]);
+	}, [patients, idToEdit]);
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
-
-		const patient = ref.current;
-		if (
-			!patient.name.value ||
-			!patient.email.value ||
-			!patient.address.value ||
-			!patient.birthdate.value
-		) {
-			return toast.warn("Fill all the fields!");
+		try {
+			if (idToEdit) {
+				await axios
+					.put("http://localhost:30000/" + idToEdit, patientData)
+					.then(({ data }) => toast.success(data))
+					.catch(({ data }) => toast.error(data));
+			} else {
+				await axios
+					.post("http://localhost:30000/", patientData)
+					.then(({ data }) => toast.success(data))
+					.catch(({ data }) => toast.error(data));
+			}
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setIdToEdit(null); //se nao fosse null, iria sobrescrever o paciente editado anteriormente
+			getPatients();
 		}
-		// UPDATE
-		if (onEdit) {
-			await axios
-				.put("http://localhost:30000/" + onEdit.id, {
-					name: patient.name?.value,
-					email: patient?.email?.value,
-					address: patient.address.value,
-					birthdate: patient.birthdate.value,
-				})
-				.then(({ data }) => toast.success(data))
-				.catch(({ data }) => toast.error(data));
-			// REGISTER
-		} else {
-			await axios
-				.post("http://localhost:30000/", {
-					name: patient.name.value,
-					email: patient.email.value,
-					address: patient.address.value,
-					birthdate: patient.birthdate.value,
-				})
-				.then(({ data }) => toast.success(data))
-				.catch(({ data }) => toast.error(data));
-		}
-		patient.name.value = "";
-		patient.email.value = "";
-		patient.address.value = "";
-		patient.birthdate.value = "";
-
-		setOnEdit(null);
-		getPatients();
 	};
 
 	return (
 		<Container maxWidth="lg">
-			<FormContainer ref={ref} onSubmit={handleSubmit}>
+			<FormContainer onSubmit={handleSubmit}>
 				<TextField
 					required
 					id="outlined-required"
 					label="Name"
 					variant="outlined"
+					onChange={(e) =>
+						setPatientData({ ...patientData, name: e.target.value })
+					}
+					value={patientData.name || ""}
 				/>
 				<TextField
 					required
@@ -116,12 +91,20 @@ export const Form = ({ onEdit, setOnEdit, getPatients }: any) => {
 					label="Email"
 					variant="outlined"
 					type="email"
+					onChange={(e) =>
+						setPatientData({ ...patientData, email: e.target.value })
+					}
+					value={patientData.email || ""}
 				/>
 				<TextField
 					required
 					id="outlined-required"
 					label="Address"
 					variant="outlined"
+					onChange={(e) =>
+						setPatientData({ ...patientData, address: e.target.value })
+					}
+					value={patientData.address || ""}
 				/>
 				<TextField
 					required
@@ -132,6 +115,10 @@ export const Form = ({ onEdit, setOnEdit, getPatients }: any) => {
 						shrink: true,
 					}}
 					type="date"
+					onChange={(e) =>
+						setPatientData({ ...patientData, birthdate: e.target.value })
+					}
+					value={patientData.birthdate || ""}
 				/>
 				<Button variant="outlined" size="large" type="submit">
 					{" "}

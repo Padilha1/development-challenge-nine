@@ -9,17 +9,19 @@ import { toast, ToastContainer } from "react-toastify";
 import { Grid } from "./components/Grid";
 import { useEffect, useState } from "react";
 
+const Logo = styled.img`
+	margin-top: 2rem;
+	width: 100px;
+`;
 const Title = styled.h2``;
 
 function App() {
 	const [patients, setPatients] = useState([]);
-	const [onEdit, setOnEdit] = useState(null);
+	const [idToEdit, setIdToEdit] = useState(null);
 
 	const getPatients = async () => {
 		try {
-			const res = await axios.get(
-				"http://localhost:30000/"
-			);
+			const res = await axios.get("http://localhost:30000/");
 			setPatients(res.data);
 		} catch (error) {
 			console.log(error);
@@ -32,12 +34,18 @@ function App() {
 
 	return (
 		<>
-			<Title> Patients </Title>
-			<Form onEdit={onEdit} setOnEdit={setOnEdit} getPatients={getPatients} />
+			<Logo src="./logoDark.png" />
+			<Title> Medcloud Patients </Title>
+			<Form
+				patients={patients}
+				getPatients={getPatients}
+				idToEdit={idToEdit}
+				setIdToEdit={setIdToEdit}
+			/>
 			<Grid
 				patients={patients}
 				setPatients={setPatients}
-				setOnEdit={setOnEdit}
+				setIdToEdit={setIdToEdit}
 			/>
 			<ToastContainer autoClose={4000} position={toast.POSITION.TOP_RIGHT} />
 		</>

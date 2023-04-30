@@ -12,9 +12,9 @@ import { Key } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export const Grid = ({ patients, setPatients, setOnEdit }: any) => {
-	const handleEdit = (item: any) => {
-		setOnEdit(item);
+export const Grid = ({ patients, setPatients, setIdToEdit }: any) => {
+	const handleEdit = (id: any) => {
+		setIdToEdit(id);
 	};
 
 	const handleDelete = async (id: any) => {
@@ -28,7 +28,7 @@ export const Grid = ({ patients, setPatients, setOnEdit }: any) => {
 			})
 			.catch(({ data }) => toast.error(data));
 
-		setOnEdit(null);
+		setIdToEdit(null);
 	};
 
 	return (
