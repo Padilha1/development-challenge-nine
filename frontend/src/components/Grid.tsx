@@ -85,20 +85,20 @@ export const Grid = (props: FormProps) => {
 				<TableBody>
 					{patients
 						.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-						.map((item, i: number) => (
+						.map((patients, i: number) => (
 							<TableRow key={i}>
 								<TableCell align="left" size="medium">
 									{" "}
-									{item.name}{" "}
+									{patients.name}{" "}
 								</TableCell>
-								<TableCell align="left"> {item.email} </TableCell>
-								<TableCell align="left"> {item.address} </TableCell>
-								<TableCell align="left"> {item.birthdate} </TableCell>
+								<TableCell align="left"> {patients.email} </TableCell>
+								<TableCell align="left"> {patients.address} </TableCell>
+								<TableCell align="left"> {patients.birthdate} </TableCell>
 								<TableCell align="right">
-									<FaTrash onClick={() => handleDelete(item.id)} />
+									<FaTrash onClick={() => handleDelete(patients.id)} />
 								</TableCell>
 								<TableCell align="right">
-									<FaEdit onClick={() => handleEdit(item.id)} />
+									<FaEdit onClick={() => handleEdit(patients.id)} />
 								</TableCell>
 							</TableRow>
 						))}
