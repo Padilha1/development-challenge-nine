@@ -15,8 +15,16 @@ const Logo = styled.img`
 `;
 const Title = styled.h2``;
 
+type Patient = {
+	id?: number;
+	name: string;
+	email: string;
+	address: string;
+	birthdate: string;
+};
+
 function App() {
-	const [patients, setPatients] = useState([]);
+	const [patients, setPatients] = useState<Patient[] | []>([]);
 	const [idToEdit, setIdToEdit] = useState(null);
 
 	const getPatients = async () => {

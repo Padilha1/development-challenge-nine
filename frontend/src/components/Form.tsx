@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Container, TextField } from "@mui/material";
 import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { toast } from "react-toastify";
+
 import styled from "styled-components";
 import axios from "axios";
-import { toast } from "react-toastify";
 
 const FormContainer = styled.form`
 	display: flex;
@@ -130,8 +131,8 @@ export const Form = (props: FormProps) => {
 					}
 					value={patientData.birthdate || ""}
 				/>
-				<Button variant="outlined" size="large" type="submit" color="secondary">
-					{patientData ? "Update Patient" : "Register Patient"}
+				<Button variant="outlined" size="large" type="submit">
+					Register Patient
 				</Button>
 			</FormContainer>
 		</Container>
